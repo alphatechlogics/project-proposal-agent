@@ -1,63 +1,79 @@
 import PyPDF2
 from docx import Document
-import io
+from utils import batch_process
+from loguru import logger
 
 class DocumentProcessor:
-    def process_document(self, uploaded_file):
-        file_type = uploaded_file.name.split('.')[-1].lower()
-        content = ""
+    def __init__(self, chunk_size=4000):
+        self.chunk_size = chunk_size
+
+    def process_document(self, file):
+        file_extension = file.name.split('.')[-1].lower()
         
-        if file_type == 'pdf':
-            content = self._process_pdf(uploaded_file)
-        elif file_type == 'docx':
-            content = self._process_docx(uploaded_file)
-        elif file_type == 'txt':
-            content = uploaded_file.getvalue().decode('utf-8')
-            
-        return self._structure_content(content)
-    
-    def _process_pdf(self, file):
-        pdf_reader = PyPDF2.PdfReader(io.BytesIO(file.getvalue()))
-        return " ".join(page.extract_text() for page in pdf_reader.pages)
-    
-    def _process_docx(self, file):
-        doc = Document(io.BytesIO(file.getvalue()))
-        return " ".join(paragraph.text for paragraph in doc.paragraphs)
-    
-    def _structure_content(self, content):
-        # Basic content structuring
-        sections = {
-            "overview": "",
-            "requirements": [],
-            "constraints": [],
-            "specifications": []
-        }
-        
-        # Simple section detection (can be enhanced with ML/regex)
-        lines = content.split('\n')
-        current_section = "overview"
-        
-        for line in lines:
-            line = line.strip()
-            if not line:
-                continue
-                
-            # Basic section detection
-            lower_line = line.lower()
-            if "requirement" in lower_line:
-                current_section = "requirements"
-                continue
-            elif "constraint" in lower_line:
-                current_section = "constraints"
-                continue
-            elif "specification" in lower_line:
-                current_section = "specifications"
-                continue
-                
-            # Add content to appropriate section
-            if current_section in ["requirements", "constraints", "specifications"]:
-                sections[current_section].append(line)
+        try:
+            if file_extension == 'pdf':
+                return self._process_pdf(file)
+            elif file_extension == 'docx':
+                return self._process_docx(file)
+            elif file_extension == 'txt':
+                return self._process_txt(file)
             else:
-                sections["overview"] += line + " "
+                raise ValueError(f"Unsupported file format: {file_extension}")
+        except Exception as e:
+            logger.error(f"Error processing document: {str(e)}")
+            raise
+
+    def _process_pdf(self, file):
+        pdf_reader = PyPDF2.PdfReader(file)
+        text_chunks = []
+        
+        for page in pdf_reader.pages:
+            text = page.extract_text()
+            if text.strip():
+                text_chunks.extend(self._split_into_chunks(text))
+        
+        return self._combine_chunks(text_chunks)
+
+    def _process_docx(self, file):
+        doc = Document(file)
+        text_chunks = []
+        
+        for paragraph in doc.paragraphs:
+            text = paragraph.text
+            if text.strip():
+                text_chunks.extend(self._split_into_chunks(text))
                 
-        return sections
+        return self._combine_chunks(text_chunks)
+
+    def _process_txt(self, file):
+        text = file.read().decode('utf-8')
+        text_chunks = self._split_into_chunks(text)
+        return self._combine_chunks(text_chunks)
+
+    def _split_into_chunks(self, text):
+        words = text.split()
+        chunks = []
+        current_chunk = []
+        current_length = 0
+        
+        for word in words:
+            word_length = len(word) + 1  # +1 for space
+            if current_length + word_length > self.chunk_size:
+                chunks.append(' '.join(current_chunk))
+                current_chunk = [word]
+                current_length = word_length
+            else:
+                current_chunk.append(word)
+                current_length += word_length
+                
+        if current_chunk:
+            chunks.append(' '.join(current_chunk))
+            
+        return chunks
+
+    def _combine_chunks(self, chunks):
+        def merge_batch(batch):
+            return [' '.join(batch)]
+            
+        # Process chunks in batches of 5
+        return batch_process(chunks, 5, merge_batch)[0]

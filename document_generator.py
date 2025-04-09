@@ -1,85 +1,81 @@
 from docx import Document
 from docx.shared import Inches, Pt
 from docx.enum.text import WD_ALIGN_PARAGRAPH
+from loguru import logger
+import io
 
 class DocumentGenerator:
-    def generate_documents(self, requirements, tech_specs, project_plan, cost_estimate):
-        doc = Document()
-        self._add_title_page(doc)
-        self._add_executive_summary(doc, requirements, cost_estimate)
-        self._add_requirements_section(doc, requirements)
-        self._add_technical_specs_section(doc, tech_specs)
-        self._add_project_plan_section(doc, project_plan)
-        self._add_cost_section(doc, cost_estimate)
-        
-        # Save to byte stream for Streamlit download
-        import io
-        doc_stream = io.BytesIO()
-        doc.save(doc_stream)
-        doc_stream.seek(0)
-        return doc_stream.getvalue()
-    
-    def _add_title_page(self, doc):
+    def __init__(self):
+        self.sections = {
+            'requirements': self._add_requirements_section,
+            'tech_specs': self._add_technical_specs_section,
+            'project_plan': self._add_project_plan_section,
+            'cost_estimate': self._add_cost_estimate_section
+        }
+
+    def generate_documents(self, **sections):
+        try:
+            doc = Document()
+            self._add_title(doc)
+            self._add_toc(doc)
+            
+            for section_name, content in sections.items():
+                if section_name in self.sections and content:
+                    self.sections[section_name](doc, content)
+                    
+            return self._save_document(doc)
+        except Exception as e:
+            logger.error(f"Error generating document: {str(e)}")
+            raise
+
+    def _add_title(self, doc):
         title = doc.add_heading('Project Analysis Report', 0)
         title.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        
-        # Add date and other metadata
         doc.add_paragraph().add_run().add_break()
-        date_paragraph = doc.add_paragraph()
-        date_paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        date_paragraph.add_run('Generated: ' + self._get_current_date())
-        
+
+    def _add_toc(self, doc):
+        toc = doc.add_paragraph('Table of Contents')
+        toc.style = 'Heading 1'
+        doc.add_paragraph().add_run().add_break()
+
+    def _add_requirements_section(self, doc, content):
+        heading = doc.add_heading('Requirements Analysis', 1)
+        doc.add_paragraph(content)
         doc.add_page_break()
-    
-    def _add_executive_summary(self, doc, requirements, cost_estimate):
-        doc.add_heading('Executive Summary', level=1)
-        summary = doc.add_paragraph()
-        summary.add_run('This document presents a comprehensive analysis of the project requirements, ')
-        summary.add_run('technical specifications, implementation plan, and associated costs.')
+
+    def _add_technical_specs_section(self, doc, content):
+        heading = doc.add_heading('Technical Specifications', 1)
+        doc.add_paragraph(content)
         doc.add_page_break()
-    
-    def _add_requirements_section(self, doc, requirements):
-        doc.add_heading('Requirements Analysis', level=1)
-        if isinstance(requirements, str):
-            doc.add_paragraph(requirements)
-        elif isinstance(requirements, dict):
-            for key, value in requirements.items():
-                doc.add_heading(key.title(), level=2)
-                if isinstance(value, list):
-                    for item in value:
-                        doc.add_paragraph(item, style='List Bullet')
-                else:
-                    doc.add_paragraph(str(value))
-    
-    def _add_technical_specs_section(self, doc, tech_specs):
-        doc.add_heading('Technical Specifications', level=1)
-        if isinstance(tech_specs, str):
-            doc.add_paragraph(tech_specs)
+
+    def _add_project_plan_section(self, doc, content):
+        heading = doc.add_heading('Project Plan', 1)
+        if isinstance(content, dict):
+            for key, value in content.items():
+                subheading = doc.add_heading(key.replace('_', ' ').title(), 2)
+                doc.add_paragraph(str(value))
         else:
-            doc.add_paragraph(str(tech_specs))
-    
-    def _add_project_plan_section(self, doc, project_plan):
-        doc.add_heading('Project Implementation Plan', level=1)
-        if isinstance(project_plan, dict):
-            for section, content in project_plan.items():
-                doc.add_heading(section.replace('_', ' ').title(), level=2)
-                if isinstance(content, str):
-                    doc.add_paragraph(content)
-                else:
-                    doc.add_paragraph(str(content))
-    
-    def _add_cost_section(self, doc, cost_estimate):
-        doc.add_heading('Cost Estimation', level=1)
-        if isinstance(cost_estimate, dict):
-            for category, costs in cost_estimate.items():
-                doc.add_heading(category.replace('_', ' ').title(), level=2)
-                if isinstance(costs, dict):
-                    for item, amount in costs.items():
-                        p = doc.add_paragraph(style='List Bullet')
-                        p.add_run(f"{item.replace('_', ' ').title()}: ${amount:,.2f}")
-                else:
-                    doc.add_paragraph(f"${costs:,.2f}")
-    
-    def _get_current_date(self):
-        from datetime import datetime
-        return datetime.now().strftime("%B %d, %Y")
+            doc.add_paragraph(str(content))
+        doc.add_page_break()
+
+    def _add_cost_estimate_section(self, doc, content):
+        heading = doc.add_heading('Cost Estimate', 1)
+        if isinstance(content, dict):
+            table = doc.add_table(rows=1, cols=2)
+            table.style = 'Table Grid'
+            header_cells = table.rows[0].cells
+            header_cells[0].text = 'Item'
+            header_cells[1].text = 'Cost'
+            
+            for item, cost in content.items():
+                row_cells = table.add_row().cells
+                row_cells[0].text = str(item)
+                row_cells[1].text = str(cost)
+        else:
+            doc.add_paragraph(str(content))
+
+    def _save_document(self, doc):
+        output = io.BytesIO()
+        doc.save(output)
+        output.seek(0)
+        return output.getvalue()

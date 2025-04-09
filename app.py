@@ -6,6 +6,7 @@ from cost_estimator import CostEstimator
 from document_generator import DocumentGenerator
 from groq_client import GroqClient
 from config import Config
+from loguru import logger
 
 st.set_page_config(page_title="AI Document Generation System", layout="wide")
 
@@ -19,6 +20,32 @@ def initialize_groq_client():
     except Exception as e:
         st.error(f"Failed to initialize Groq client: {str(e)}")
         return None
+
+def run_ai_analysis(ai_pipeline, content):
+    progress_bar = st.progress(0)
+    col1, col2, col3 = st.columns(3)
+    
+    try:
+        with col1:
+            with st.spinner("Analyzing requirements..."):
+                requirements = ai_pipeline.analyze_requirements(content)
+                progress_bar.progress(33)
+
+        with col2:
+            with st.spinner("Generating technical specs..."):
+                tech_specs = ai_pipeline.generate_technical_specs(requirements)
+                progress_bar.progress(66)
+
+        with col3:
+            with st.spinner("Suggesting architecture..."):
+                architecture = ai_pipeline.suggest_architecture(tech_specs)
+                progress_bar.progress(100)
+
+        return requirements, tech_specs, architecture
+    except Exception as e:
+        logger.error(f"AI analysis failed: {str(e)}")
+        st.error("An error occurred during AI analysis. Please try again.")
+        return None, None, None
 
 def main():
     st.title("AI Document Generation System")
@@ -46,8 +73,7 @@ def main():
                 extracted_content = doc_processor.process_document(uploaded_file)
                 
                 # AI Analysis
-                requirements = ai_pipeline.analyze_requirements(extracted_content)
-                tech_specs = ai_pipeline.generate_technical_specs(requirements)
+                requirements, tech_specs, architecture = run_ai_analysis(ai_pipeline, extracted_content)
                 
                 # Project Planning
                 project_plan = project_planner.generate_plan(tech_specs)
@@ -67,7 +93,7 @@ def main():
                 st.success("Document processing complete!")
                 
                 # Display tabs for different sections
-                tab1, tab2, tab3, tab4 = st.tabs(["Requirements", "Technical Specs", "Project Plan", "Cost Estimate"])
+                tab1, tab2, tab3, tab4, tab5 = st.tabs(["Requirements", "Technical Specs", "Architecture", "Project Plan", "Cost Estimate"])
                 
                 with tab1:
                     st.header("Analyzed Requirements")
@@ -78,10 +104,14 @@ def main():
                     st.write(tech_specs)
                     
                 with tab3:
+                    st.header("Suggested Architecture")
+                    st.write(architecture)
+                    
+                with tab4:
                     st.header("Project Plan")
                     st.write(project_plan)
                     
-                with tab4:
+                with tab5:
                     st.header("Cost Estimate")
                     st.write(cost_estimate)
                 
