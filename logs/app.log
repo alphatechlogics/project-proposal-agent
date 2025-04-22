@@ -1,12 +1,3 @@
-2025-04-08 19:11:52.097 | ERROR    | __main__:initialize_groq_client:22 - Failed to initialize Groq client: 1 validation error for ChatGroq
-__root__
-  Client.__init__() got an unexpected keyword argument 'proxies' (type=type_error)
-2025-04-08 19:32:09.537 | ERROR    | __main__:initialize_groq_client:22 - Failed to initialize Groq client: Client.__init__() got an unexpected keyword argument 'proxies'
-2025-04-08 19:39:59.799 | ERROR    | __main__:initialize_groq_client:22 - Failed to initialize Groq client: Client.__init__() got an unexpected keyword argument 'proxies'
-2025-04-08 19:43:55.126 | ERROR    | __main__:initialize_groq_client:22 - Failed to initialize Groq client: Client.__init__() got an unexpected keyword argument 'proxies'
-2025-04-08 19:45:30.431 | ERROR    | __main__:initialize_groq_client:20 - Failed to initialize Groq client: Client.__init__() got an unexpected keyword argument 'proxies'
-2025-04-08 19:47:44.626 | ERROR    | __main__:initialize_groq_client:19 - Failed to initialize Groq client: Client.__init__() got an unexpected keyword argument 'proxies'
-2025-04-08 19:59:13.895 | DEBUG    | utils:batch_process:33 - Processed batch 1 successfully
 2025-04-08 19:59:13.896 | DEBUG    | utils:batch_process:33 - Processed batch 2 successfully
 2025-04-08 19:59:13.897 | DEBUG    | utils:batch_process:33 - Processed batch 3 successfully
 2025-04-08 19:59:13.897 | DEBUG    | utils:batch_process:33 - Processed batch 4 successfully
@@ -21,92 +12,15 @@ __root__
 2025-04-09 10:09:41.719 | DEBUG    | utils:batch_process:33 - Processed batch 3 successfully
 2025-04-09 10:09:41.719 | DEBUG    | utils:batch_process:33 - Processed batch 4 successfully
 2025-04-09 10:09:41.719 | DEBUG    | utils:batch_process:33 - Processed batch 5 successfully
-2025-04-09 10:09:42.087 | ERROR    | __main__:run_ai_analysis:46 - AI analysis failed: Error code: 404 - {'error': {'message': 'The model `llama-4-scout-17b-16e-instruct` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'code': 'model_not_found'}}
 2025-04-09 10:11:02.906 | DEBUG    | utils:batch_process:33 - Processed batch 1 successfully
 2025-04-09 10:11:02.906 | DEBUG    | utils:batch_process:33 - Processed batch 2 successfully
 2025-04-09 10:11:02.906 | DEBUG    | utils:batch_process:33 - Processed batch 3 successfully
 2025-04-09 10:11:02.906 | DEBUG    | utils:batch_process:33 - Processed batch 4 successfully
 2025-04-09 10:11:02.906 | DEBUG    | utils:batch_process:33 - Processed batch 5 successfully
-2025-04-09 10:11:03.268 | ERROR    | __main__:run_ai_analysis:46 - AI analysis failed: Error code: 400 - {'error': {'message': '`max_tokens` must be less than or equal to `8192`, the maximum value for `max_tokens` is less than the `context_window` for this model', 'type': 'invalid_request_error'}}
 2025-04-09 10:11:34.091 | DEBUG    | utils:batch_process:33 - Processed batch 1 successfully
 2025-04-09 10:11:34.091 | DEBUG    | utils:batch_process:33 - Processed batch 2 successfully
 2025-04-09 10:11:34.091 | DEBUG    | utils:batch_process:33 - Processed batch 3 successfully
 2025-04-09 10:11:34.091 | DEBUG    | utils:batch_process:33 - Processed batch 4 successfully
 2025-04-09 10:11:34.091 | DEBUG    | utils:batch_process:33 - Processed batch 5 successfully
-2025-04-09 10:12:39.315 | ERROR    | cost_estimator:_calculate_labor_costs:68 - Error calculating labor costs: 'str' object has no attribute 'items'
-2025-04-09 10:12:39.318 | ERROR    | cost_estimator:calculate_costs:45 - Error calculating costs: 'str' object has no attribute 'items'
 2025-04-09 11:12:24.664 | DEBUG    | utils:batch_process:33 - Processed batch 1 successfully
 2025-04-09 11:12:24.666 | DEBUG    | utils:batch_process:33 - Processed batch 2 successfully
-2025-04-09 11:12:24.666 | DEBUG    | utils:batch_process:33 - Processed batch 3 successfully
-2025-04-09 11:12:24.667 | DEBUG    | utils:batch_process:33 - Processed batch 4 successfully
-2025-04-09 11:12:24.667 | DEBUG    | utils:batch_process:33 - Processed batch 5 successfully
-2025-04-09 11:13:22.379 | ERROR    | cost_estimator:_calculate_labor_costs:68 - Error calculating labor costs: 'str' object has no attribute 'items'
-2025-04-09 11:13:22.380 | ERROR    | cost_estimator:calculate_costs:45 - Error calculating costs: 'str' object has no attribute 'items'
-2025-04-09 11:18:12.066 | DEBUG    | utils:batch_process:33 - Processed batch 1 successfully
-2025-04-09 11:18:12.070 | DEBUG    | utils:batch_process:33 - Processed batch 2 successfully
-2025-04-09 11:18:12.071 | DEBUG    | utils:batch_process:33 - Processed batch 3 successfully
-2025-04-09 11:18:12.071 | DEBUG    | utils:batch_process:33 - Processed batch 4 successfully
-2025-04-09 11:18:12.071 | DEBUG    | utils:batch_process:33 - Processed batch 5 successfully
-2025-04-09 11:19:08.126 | ERROR    | cost_estimator:_calculate_labor_costs:77 - Error calculating labor costs: 'str' object has no attribute 'items'
-2025-04-09 11:19:08.127 | ERROR    | cost_estimator:calculate_costs:51 - Error calculating costs: 'str' object has no attribute 'items'
-2025-04-09 11:23:07.397 | DEBUG    | utils:batch_process:33 - Processed batch 1 successfully
-2025-04-09 11:23:07.398 | DEBUG    | utils:batch_process:33 - Processed batch 2 successfully
-2025-04-09 11:23:07.398 | DEBUG    | utils:batch_process:33 - Processed batch 3 successfully
-2025-04-09 11:23:07.398 | DEBUG    | utils:batch_process:33 - Processed batch 4 successfully
-2025-04-09 11:23:07.398 | DEBUG    | utils:batch_process:33 - Processed batch 5 successfully
-2025-04-09 11:24:06.420 | ERROR    | cost_estimator:_calculate_labor_costs:77 - Error calculating labor costs: 'str' object has no attribute 'items'
-2025-04-09 11:24:06.423 | ERROR    | cost_estimator:calculate_costs:51 - Error calculating costs: 'str' object has no attribute 'items'
-2025-04-09 11:28:01.922 | DEBUG    | utils:batch_process:33 - Processed batch 1 successfully
-2025-04-09 11:28:01.923 | DEBUG    | utils:batch_process:33 - Processed batch 2 successfully
-2025-04-09 11:28:01.923 | DEBUG    | utils:batch_process:33 - Processed batch 3 successfully
-2025-04-09 11:28:01.924 | DEBUG    | utils:batch_process:33 - Processed batch 4 successfully
-2025-04-09 11:28:01.924 | DEBUG    | utils:batch_process:33 - Processed batch 5 successfully
-2025-04-09 11:29:01.784 | ERROR    | cost_estimator:_calculate_labor_costs:77 - Error calculating labor costs: 'str' object has no attribute 'items'
-2025-04-09 11:29:01.785 | ERROR    | cost_estimator:calculate_costs:51 - Error calculating costs: 'str' object has no attribute 'items'
-2025-04-09 11:30:07.702 | DEBUG    | utils:batch_process:33 - Processed batch 1 successfully
-2025-04-09 11:30:07.702 | DEBUG    | utils:batch_process:33 - Processed batch 2 successfully
-2025-04-09 11:30:07.702 | DEBUG    | utils:batch_process:33 - Processed batch 3 successfully
-2025-04-09 11:30:07.702 | DEBUG    | utils:batch_process:33 - Processed batch 4 successfully
-2025-04-09 11:30:07.703 | DEBUG    | utils:batch_process:33 - Processed batch 5 successfully
-2025-04-09 11:31:04.317 | ERROR    | cost_estimator:_calculate_labor_costs:77 - Error calculating labor costs: 'str' object has no attribute 'items'
-2025-04-09 11:31:04.321 | ERROR    | cost_estimator:calculate_costs:51 - Error calculating costs: 'str' object has no attribute 'items'
-2025-04-09 11:32:28.401 | DEBUG    | utils:batch_process:33 - Processed batch 1 successfully
-2025-04-09 11:32:28.401 | DEBUG    | utils:batch_process:33 - Processed batch 2 successfully
-2025-04-09 11:32:28.402 | DEBUG    | utils:batch_process:33 - Processed batch 3 successfully
-2025-04-09 11:32:28.402 | DEBUG    | utils:batch_process:33 - Processed batch 4 successfully
-2025-04-09 11:32:28.402 | DEBUG    | utils:batch_process:33 - Processed batch 5 successfully
-2025-04-09 11:33:15.181 | ERROR    | cost_estimator:calculate_costs:72 - Error calculating costs: name 'datetime' is not defined
-2025-04-09 11:34:08.552 | DEBUG    | utils:batch_process:33 - Processed batch 1 successfully
-2025-04-09 11:34:08.552 | DEBUG    | utils:batch_process:33 - Processed batch 2 successfully
-2025-04-09 11:34:08.552 | DEBUG    | utils:batch_process:33 - Processed batch 3 successfully
-2025-04-09 11:34:08.552 | DEBUG    | utils:batch_process:33 - Processed batch 4 successfully
-2025-04-09 11:34:08.553 | DEBUG    | utils:batch_process:33 - Processed batch 5 successfully
-2025-04-09 11:35:03.080 | ERROR    | cost_estimator:calculate_costs:72 - Error calculating costs: name 'datetime' is not defined
-2025-04-09 11:38:31.377 | DEBUG    | utils:batch_process:33 - Processed batch 1 successfully
-2025-04-09 11:38:31.378 | DEBUG    | utils:batch_process:33 - Processed batch 2 successfully
-2025-04-09 11:38:31.378 | DEBUG    | utils:batch_process:33 - Processed batch 3 successfully
-2025-04-09 11:38:31.378 | DEBUG    | utils:batch_process:33 - Processed batch 4 successfully
-2025-04-09 11:38:31.378 | DEBUG    | utils:batch_process:33 - Processed batch 5 successfully
-2025-04-09 11:39:26.060 | ERROR    | cost_estimator:calculate_costs:72 - Error calculating costs: name 'datetime' is not defined
-2025-04-09 11:42:41.859 | DEBUG    | utils:batch_process:33 - Processed batch 1 successfully
-2025-04-09 11:42:41.860 | DEBUG    | utils:batch_process:33 - Processed batch 2 successfully
-2025-04-09 11:42:41.860 | DEBUG    | utils:batch_process:33 - Processed batch 3 successfully
-2025-04-09 11:42:41.860 | DEBUG    | utils:batch_process:33 - Processed batch 4 successfully
-2025-04-09 11:42:41.861 | DEBUG    | utils:batch_process:33 - Processed batch 5 successfully
-2025-04-09 11:43:15.860 | DEBUG    | utils:batch_process:33 - Processed batch 1 successfully
-2025-04-09 11:43:15.860 | DEBUG    | utils:batch_process:33 - Processed batch 2 successfully
-2025-04-09 11:43:15.861 | DEBUG    | utils:batch_process:33 - Processed batch 3 successfully
-2025-04-09 11:43:15.861 | DEBUG    | utils:batch_process:33 - Processed batch 4 successfully
-2025-04-09 11:43:15.861 | DEBUG    | utils:batch_process:33 - Processed batch 5 successfully
-2025-04-09 11:44:07.109 | ERROR    | cost_estimator:calculate_costs:72 - Error calculating costs: name 'datetime' is not defined
-2025-04-09 11:45:47.009 | DEBUG    | utils:batch_process:33 - Processed batch 1 successfully
-2025-04-09 11:45:47.010 | DEBUG    | utils:batch_process:33 - Processed batch 2 successfully
-2025-04-09 11:45:47.010 | DEBUG    | utils:batch_process:33 - Processed batch 3 successfully
-2025-04-09 11:45:47.010 | DEBUG    | utils:batch_process:33 - Processed batch 4 successfully
-2025-04-09 11:45:47.010 | DEBUG    | utils:batch_process:33 - Processed batch 5 successfully
-2025-04-09 11:47:09.363 | ERROR    | cost_estimator:calculate_costs:72 - Error calculating costs: name 'datetime' is not defined
-2025-04-09 11:51:59.415 | DEBUG    | utils:batch_process:33 - Processed batch 1 successfully
-2025-04-09 11:51:59.417 | DEBUG    | utils:batch_process:33 - Processed batch 2 successfully
-2025-04-09 11:51:59.417 | DEBUG    | utils:batch_process:33 - Processed batch 3 successfully
-2025-04-09 11:51:59.417 | DEBUG    | utils:batch_process:33 - Processed batch 4 successfully
-2025-04-09 11:51:59.417 | DEBUG    | utils:batch_process:33 - Processed batch 5 successfully

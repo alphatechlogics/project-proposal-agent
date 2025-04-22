@@ -4,14 +4,19 @@ from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
 from utils import rate_limit, retry_with_exponential_backoff
 from loguru import logger
+from config import config
+import os
+from dotenv import load_dotenv
+
+load_dotenv(override=True)
 
 class GroqClient:
     def __init__(self):
         self.llm = None
 
-    def initialize(self, api_key):
+    def initialize(self):
         self.llm = ChatGroq(
-            groq_api_key=api_key,
+            groq_api_key=os.getenv("GROQ_API_KEY"),
             model_name="meta-llama/llama-4-scout-17b-16e-instruct",
             max_tokens=3000,
             temperature=0.7
