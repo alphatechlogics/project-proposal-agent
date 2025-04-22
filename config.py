@@ -1,18 +1,13 @@
 import os
 from dotenv import load_dotenv
-from flask import cli
+from flask import cli, config
 from loguru import logger
 import sys
 
-class Config:
+class Config:    
     def __init__(self):
         self._setup_logging()
-        load_dotenv()
-        self.groq_api_key = os.getenv('GROQ_API_KEY')
-        if not self.groq_api_key:
-            logger.error("GROQ_API_KEY environment variable is not set")
-            raise ValueError("GROQ_API_KEY environment variable is not set. Please check your .env file.")
-    
+ 
     def _setup_logging(self):
         logger.remove()  # Remove default handler
         logger.add(
@@ -26,9 +21,6 @@ class Config:
             retention="10 days",
             level="DEBUG"
         )
+
             
-    def get_groq_api_key(self):
-        return self.groq_api_key
     
-
-
