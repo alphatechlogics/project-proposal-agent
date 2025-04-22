@@ -12,10 +12,8 @@ st.set_page_config(page_title="AI Document Generation System", layout="wide")
 
 def initialize_groq_client():
     try:
-        config = Config()
-        api_key = config.get_groq_api_key()
         client = GroqClient()
-        client.initialize(api_key)
+        client.initialize()
         return client
     except Exception as e:
         st.error(f"Failed to initialize Groq client: {str(e)}")
