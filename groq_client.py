@@ -4,7 +4,6 @@ from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
 from utils import rate_limit, retry_with_exponential_backoff
 from loguru import logger
-from config import config
 import os
 from dotenv import load_dotenv
 

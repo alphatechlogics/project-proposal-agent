@@ -1,6 +1,5 @@
 import os
 from dotenv import load_dotenv
-from flask import cli, config
 from loguru import logger
 import sys
 
