@@ -1,106 +1,74 @@
 from loguru import logger
-import json
-from typing import Dict, Union, Any
-from datetime import datetime  # Added this import
+from datetime import datetime
+from langchain.chains import LLMChain
+from langchain.prompts import PromptTemplate
 
 class CostEstimator:
-    def __init__(self, hourly_rate: float = 150.0):
-        self.hourly_rate = hourly_rate
+    def __init__(self, groq_client):
+        self.groq_client = groq_client
+        self._setup_chain()
+        
+    def _setup_chain(self):
+        cost_template = """Based on the provided project plan and resources, generate a detailed cost estimate.
 
-    def calculate_costs(self, project_plan: Union[str, Dict[str, Any]]) -> Dict[str, Any]:
+        Project Plan and Resources:
+        {project_plan}
+        
+        Cost Parameters:
+        - Average hourly rates: {hourly_rates}
+        - Infrastructure base cost: {infrastructure_cost}
+        - License base cost: {license_cost}
+        - Project complexity: {complexity}
+        - Risk factor: {risk_factor}
+        - Cloud services: {cloud_services}
+        - Additional licenses: {additional_licenses}
+
+        Provide a detailed cost analysis that includes:
+        1. Labor Costs:
+           - Break down by role and phase
+           - Consider complexity and expertise levels
+           - Account for different hourly rates
+           
+        2. Infrastructure Costs:
+           - Cloud services and hosting
+           - Development environments
+           - Testing and staging setups
+           - Monitoring and security
+           
+        3. License and Tool Costs:
+           - Development tools
+           - Third-party services
+           - Testing tools
+           - Security and compliance tools
+           
+        4. Risk Buffer and Contingency:
+           - Risk-based adjustments
+           - Contingency calculations
+           - Buffer recommendations
+           
+        Format the response in a clear, structured way with detailed breakdowns and explanations."""
+        
+        self.cost_chain = self.groq_client.create_chain(cost_template)
+    
+    def calculate_costs(self, project_plan, cost_params):
+        """Generate cost estimate using LLM analysis."""
         try:
-            # Convert string to dictionary if needed
-            if isinstance(project_plan, str):
-                try:
-                    project_plan = json.loads(project_plan)
-                except json.JSONDecodeError:
-                    return {
-                        "status": "error",
-                        "message": "Invalid JSON format in project plan",
-                        "timestamp": datetime.now().isoformat()
-                    }
-
-            if not isinstance(project_plan, dict):
-                return {
-                    "status": "error",
-                    "message": "Project plan must be a dictionary",
-                    "timestamp": datetime.now().isoformat()
-                }
-
-            # Calculate costs
-            labor_costs = self._calculate_labor_costs(project_plan)
-            if isinstance(labor_costs, dict) and "status" in labor_costs and labor_costs["status"] == "error":
-                return labor_costs
-
-            # Infrastructure costs (example)
-            infrastructure_costs = self._calculate_infrastructure_costs(project_plan)
+            # Format the input for the LLM
+            chain_input = {
+                "project_plan": project_plan,
+                "hourly_rates": cost_params.get("hourly_rates", "Standard industry rates"),
+                "infrastructure_cost": cost_params.get("infrastructure_cost", "$500 base"),
+                "license_cost": cost_params.get("license_cost", "$300 base"),
+                "complexity": cost_params.get("complexity_multiplier", "1.0"),
+                "risk_factor": cost_params.get("risk_factor", "1.0"),
+                "cloud_services": ", ".join(cost_params.get("cloud_services", ["Basic cloud setup"])),
+                "additional_licenses": ", ".join(cost_params.get("additional_licenses", ["Standard tools"]))
+            }
             
-            # Software license costs (example)
-            license_costs = self._calculate_license_costs(project_plan)
-
-            # Calculate total cost
-            total_cost = labor_costs + infrastructure_costs + license_costs
-
-            # Return formatted response
-            return {
-                "status": "success",
-                
-                "cost_breakdown": {
-                    "labor_costs": {
-                        "amount": round(labor_costs, 2),
-                        "currency": "USD"
-                    },
-                    "infrastructure_costs": {
-                        "amount": round(infrastructure_costs, 2),
-                        "currency": "USD"
-                    },
-                    "license_costs": {
-                        "amount": round(license_costs, 2),
-                        "currency": "USD"
-                    },
-                    "total_cost": {
-                        "amount": round(total_cost, 2),
-                        "currency": "USD"
-                    }
-                },
-                "metadata": {
-                    "hourly_rate": self.hourly_rate,
-                    "currency": "USD"
-                }
-            }
-
+            # Get cost analysis from LLM
+            cost_analysis = self.cost_chain.run(**chain_input)
+            return cost_analysis
+            
         except Exception as e:
-            logger.error(f"Error calculating costs: {str(e)}")
-            return {
-                "status": "error",
-                "message": str(e),
-                "timestamp": datetime.now().isoformat()
-            }
-
-    def _calculate_labor_costs(self, project_plan: Dict[str, Any]) -> float:
-        try:
-            labor_cost = 0.0
-            for phase, details in project_plan.items():
-                if isinstance(details, dict):
-                    # Calculate based on estimated hours
-                    hours = float(details.get("estimated_hours", 0))
-                    complexity_factor = float(details.get("complexity_factor", 1.0))
-                    labor_cost += hours * self.hourly_rate * complexity_factor
-
-            return labor_cost
-
-        except Exception as e:
-            logger.error(f"Error calculating labor costs: {str(e)}")
-            return {
-                "status": "error",
-                "message": f"Labor cost calculation error: {str(e)}",
-                "timestamp": datetime.now().isoformat()
-            }
-
-    def _calculate_infrastructure_costs(self, project_plan: Dict[str, Any]) -> float:
-        # Example implementation
-        return 500.0  # Placeholder value
-
-    def _calculate_license_costs(self, project_plan: Dict[str, Any]) -> float:
-        # Example implementation
-        return 300.0  # Placeholder value
+            logger.error(f"Error generating cost estimate: {str(e)}")
+            return "Error generating cost estimate. Please check the inputs and try again."

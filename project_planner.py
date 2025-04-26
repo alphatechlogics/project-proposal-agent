@@ -1,61 +1,59 @@
-from langchain.chains import LLMChain
 from langchain.prompts import PromptTemplate
-
+from langchain.chains import LLMChain
+from loguru import logger
 
 class ProjectPlanner:
     def __init__(self, groq_client):
         self.groq_client = groq_client
-        self._setup_chains()
+        self._setup_chain()
         
-    def _setup_chains(self):
-        self.wbs_chain = self.groq_client.create_chain(
-            """Create a detailed work breakdown structure for: {tech_specs}
-            Include:
-            1. Major phases
-            2. Key deliverables
-            3. Tasks and subtasks
-            4. Dependencies
-            
-            Format as a structured list with estimated complexity levels."""
-        )
+    def _setup_chain(self):
+        plan_template = """Based on the technical specifications provided, create a detailed project plan that includes clear phases, tasks, and resource allocation.
+
+        Technical Specifications:
+        {tech_specs}
         
-        self.timeline_chain = self.groq_client.create_chain(
-            """Generate a realistic timeline estimation for: {tech_specs}
-            Consider:
-            1. Task dependencies
-            2. Resource availability
-            3. Complexity factors
-            4. Buffer periods
-            
-            Provide estimates in weeks/months with confidence levels."""
-        )
+        Generate a comprehensive project plan with the following structure:
         
-        self.resources_chain = self.groq_client.create_chain(
-            """Determine required resources for: {tech_specs}
-            Include:
-            1. Development team composition
-            2. Technical infrastructure
-            3. Tools and licenses
-            4. External dependencies
-            
-            Provide specific roles and quantities needed."""
-        )
+        1. Project Phases:
+           - Break down into logical phases
+           - Include duration estimates for each phase
+           - Specify key milestones and deliverables
+           - Note dependencies between phases
+           
+        2. Resource Requirements:
+           - Required team roles and expertise levels
+           - Development tools and licenses needed
+           - Infrastructure and cloud services required
+           - Testing and deployment resources
+           
+        3. Implementation Timeline:
+           - Start and end dates for each phase
+           - Major milestones and deadlines
+           - Critical path activities
+           - Buffer periods for risks
+           
+        4. Risk Assessment:
+           - Potential technical challenges
+           - Resource availability risks
+           - Timeline impact factors
+           - Mitigation strategies
+           
+        Include sufficient detail for accurate cost estimation, such as:
+        - Time estimates for each phase and major task
+        - Specific expertise levels required
+        - Infrastructure components needed
+        - Third-party tools and services
+        - Complex integration points
+        - Performance requirements
+        - Security considerations"""
         
-        self.risks_chain = self.groq_client.create_chain(
-            """Identify potential project risks for: {tech_specs}
-            Include:
-            1. Technical risks
-            2. Resource risks
-            3. Timeline risks
-            4. External dependencies
-            
-            Provide risk levels and mitigation strategies."""
-        )
+        self.plan_chain = self.groq_client.create_chain(plan_template)
     
     def generate_plan(self, tech_specs):
-        return {
-            "work_breakdown": self.wbs_chain.run(tech_specs=tech_specs),
-            "timeline": self.timeline_chain.run(tech_specs=tech_specs),
-            "resources": self.resources_chain.run(tech_specs=tech_specs),
-            "risks": self.risks_chain.run(tech_specs=tech_specs)
-        }
+        """Generate a detailed project plan from technical specifications."""
+        try:
+            return self.plan_chain.run(tech_specs=tech_specs)
+        except Exception as e:
+            logger.error(f"Error generating project plan: {str(e)}")
+            return "Error generating project plan. Please check the inputs and try again."
