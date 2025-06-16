@@ -4,6 +4,8 @@ An intelligent system that processes business requirement documents and generate
 
 > Live @streamlit [PPA](https://project-proposal-agent-demo1.streamlit.app/)
 
+![](https://raw.github.com/alphatechlogics/project-proposal-agent/bed768ef44e72cfb9ea56055caed08a363534d66/Screenshot%202025-06-16%20184716.png)
+
 ## Features
 
 - Document processing support for multiple formats (PDF, DOCX, TXT)
