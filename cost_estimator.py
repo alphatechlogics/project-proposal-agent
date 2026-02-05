@@ -1,7 +1,7 @@
 from loguru import logger
 from datetime import datetime
-from langchain.chains import LLMChain
-from langchain.prompts import PromptTemplate
+from langchain_classic.chains import LLMChain
+from langchain_core.prompts import PromptTemplate
 
 class CostEstimator:
     def __init__(self, groq_client):

@@ -1,5 +1,5 @@
-from langchain.prompts import PromptTemplate
-from langchain.chains import SequentialChain, LLMChain
+from langchain_core.prompts import PromptTemplate
+from langchain_classic.chains import SequentialChain, LLMChain
 
 
 class AIAnalysisPipeline:

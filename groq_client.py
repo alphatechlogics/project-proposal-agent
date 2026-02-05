@@ -1,7 +1,7 @@
 from langchain_groq import ChatGroq
-from langchain.schema import HumanMessage
-from langchain.prompts import PromptTemplate
-from langchain.chains import LLMChain
+from langchain.messages import HumanMessage
+from langchain_core.prompts import PromptTemplate
+from langchain_classic.chains import LLMChain
 from utils import rate_limit, retry_with_exponential_backoff
 from loguru import logger
 import os
