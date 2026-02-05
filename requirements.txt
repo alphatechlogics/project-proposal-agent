@@ -8,6 +8,7 @@ mypy
 langchain
 langchain-core
 langchain-groq
+langchain_classic
 loguru
 streamlit
 PyPDF2
